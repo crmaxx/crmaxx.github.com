@@ -1,0 +1,178 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<title>~/Desktop/api.patch.html</title>
+<meta name="Generator" content="Vim/7.3">
+<meta name="plugin-version" content="vim7.3_v12">
+<meta name="syntax" content="diff">
+<meta name="settings" content="number_lines,use_css,no_foldcolumn,expand_tabs,prevent_copy=">
+<meta name="colorscheme" content="vimhut">
+<style type="text/css">
+<!--
+pre { font-family: monospace; color: #b0b0b0; background-color: #333333; }
+body { font-family: monospace; color: #b0b0b0; background-color: #333333; }
+* { font-size: 1em; }
+.Statement { color: #de9898; background-color: #333333; padding-bottom: 1px; }
+.LineNr { color: #666666; }
+.Type { color: #78d898; background-color: #333333; padding-bottom: 1px; }
+.Special { color: #b898ee; background-color: #333333; padding-bottom: 1px; }
+.Identifier { color: #5bcece; background-color: #333333; padding-bottom: 1px; }
+-->
+</style>
+</head>
+<body>
+<pre id='vimCodeElement'>
+<span class="LineNr">  1 </span><span class="Type">Index: app/api/serverside/api.rb</span>
+<span class="LineNr">  2 </span>IDEA additional info:
+<span class="LineNr">  3 </span>Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<span class="LineNr">  4 </span><span class="Special">&lt;+&gt;UTF-8</span>
+<span class="LineNr">  5 </span>===================================================================
+<span class="LineNr">  6 </span><span class="Type">--- app/api/serverside/api.rb (date 1363030131000)</span>
+<span class="LineNr">  7 </span><span class="Type">+++ app/api/serverside/api.rb (revision )</span>
+<span class="LineNr">  8 </span><span class="Statement">@@ -12,11 +12,14 @@</span>
+<span class="LineNr">  9 </span>
+<span class="LineNr"> 10 </span>   class API &lt; Grape::API
+<span class="LineNr"> 11 </span>     version 'v1', :using =&gt; :path
+<span class="LineNr"> 12 </span><span class="Special">-    format :json</span>
+<span class="LineNr"> 13 </span><span class="Special">-    content_type :json, 'application/json'</span>
+<span class="LineNr"> 14 </span><span class="Identifier">+    #default_format :txt</span>
+<span class="LineNr"> 15 </span><span class="Identifier">+    #format :json</span>
+<span class="LineNr"> 16 </span><span class="Identifier">+    #content_type :json, &quot;application/json&quot;</span>
+<span class="LineNr"> 17 </span><span class="Identifier">+    #content_type :txt, &quot;text/plain&quot;</span>
+<span class="LineNr"> 18 </span>
+<span class="LineNr"> 19 </span><span class="Identifier">+</span>
+<span class="LineNr"> 20 </span>     rescue_from :all do |e|
+<span class="LineNr"> 21 </span><span class="Special">-      Rack::Response.new([ e.message ], 500, { 'Content-type' =&gt; 'text/erro' }).finish</span>
+<span class="LineNr"> 22 </span><span class="Identifier">+      Rack::Response.new([ e.message ], 500, { 'Content-type' =&gt; 'text/error' }).finish</span>
+<span class="LineNr"> 23 </span>     end
+<span class="LineNr"> 24 </span>
+<span class="LineNr"> 25 </span>     helpers do
+<span class="LineNr"> 26 </span><span class="Statement">@@ -31,6 +34,8 @@</span>
+<span class="LineNr"> 27 </span>           error!('401 Unauthorized', 401)
+<span class="LineNr"> 28 </span>         end
+<span class="LineNr"> 29 </span>       end
+<span class="LineNr"> 30 </span><span class="Identifier">+</span>
+<span class="LineNr"> 31 </span><span class="Identifier">+</span>
+<span class="LineNr"> 32 </span>     end
+<span class="LineNr"> 33 </span>
+<span class="LineNr"> 34 </span>     desc 'Returns Categories by organization_id.'
+<span class="LineNr"> 35 </span><span class="Statement">@@ -43,6 +48,7 @@</span>
+<span class="LineNr"> 36 </span>
+<span class="LineNr"> 37 </span>       get '/' do
+<span class="LineNr"> 38 </span>         authenticated?
+<span class="LineNr"> 39 </span><span class="Identifier">+        header['Content-Type'] = 'application/json'</span>
+<span class="LineNr"> 40 </span>         #logger.info &quot;Receiving parameters: #{params.as_json}&quot;
+<span class="LineNr"> 41 </span>         categories = Category.select([:id, :title, :organization_id,
+<span class="LineNr"> 42 </span>                         :image_file_name, :image_content_type,
+<span class="LineNr"> 43 </span><span class="Statement">@@ -67,6 +73,7 @@</span>
+<span class="LineNr"> 44 </span>       desc 'Return Category by ID with organization_id.'
+<span class="LineNr"> 45 </span>       get '/:id' do
+<span class="LineNr"> 46 </span>         authenticated?
+<span class="LineNr"> 47 </span><span class="Identifier">+        header['Content-Type'] = 'application/json'</span>
+<span class="LineNr"> 48 </span>         #logger.info &quot;Receiving parameters: #{params.as_json}&quot;
+<span class="LineNr"> 49 </span>         category = Category.select([:id, :title, :organization_id,
+<span class="LineNr"> 50 </span>                         :image_file_name, :image_content_type,
+<span class="LineNr"> 51 </span><span class="Statement">@@ -92,6 +99,7 @@</span>
+<span class="LineNr"> 52 </span>       desc 'Returns Products by organization_id and/or category_id.'
+<span class="LineNr"> 53 </span>       get '/' do
+<span class="LineNr"> 54 </span>         authenticated?
+<span class="LineNr"> 55 </span><span class="Identifier">+        header['Content-Type'] = 'application/json'</span>
+<span class="LineNr"> 56 </span>         #logger.info &quot;Receiving parameters: #{params.as_json}&quot;
+<span class="LineNr"> 57 </span>         if params[:cat_id].blank?
+<span class="LineNr"> 58 </span>           products = Product.select([:id, :title, :price, :category_id, :organization_id,
+<span class="LineNr"> 59 </span><span class="Statement">@@ -130,6 +138,7 @@</span>
+<span class="LineNr"> 60 </span>       desc 'Return Product by ID with organization_id.'
+<span class="LineNr"> 61 </span>       get '/:id' do
+<span class="LineNr"> 62 </span>         authenticated?
+<span class="LineNr"> 63 </span><span class="Identifier">+        header['Content-Type'] = 'application/json'</span>
+<span class="LineNr"> 64 </span>         #logger.info &quot;Receiving parameters: #{params.as_json}&quot;
+<span class="LineNr"> 65 </span>         product = Product.select([:id, :title, :price, :category_id, :organization_id,
+<span class="LineNr"> 66 </span>                        :image_file_name, :image_content_type,
+<span class="LineNr"> 67 </span><span class="Statement">@@ -155,6 +164,7 @@</span>
+<span class="LineNr"> 68 </span>       end
+<span class="LineNr"> 69 </span>       get '/:id' do
+<span class="LineNr"> 70 </span>         authenticated?
+<span class="LineNr"> 71 </span><span class="Identifier">+        header['Content-Type'] = 'application/json'</span>
+<span class="LineNr"> 72 </span>         #logger.info &quot;Receiving parameters: #{params.as_json}&quot;
+<span class="LineNr"> 73 </span>         order = Order.where(:id =&gt; params[:id], :organization_id =&gt; params[:org_id])
+<span class="LineNr"> 74 </span>
+<span class="LineNr"> 75 </span><span class="Statement">@@ -185,6 +195,7 @@</span>
+<span class="LineNr"> 76 </span>       end
+<span class="LineNr"> 77 </span>       post '/' do
+<span class="LineNr"> 78 </span>         authenticated?
+<span class="LineNr"> 79 </span><span class="Identifier">+        header['Content-Type'] = 'application/json'</span>
+<span class="LineNr"> 80 </span>         #logger.info &quot;Receiving parameters: #{params.as_json}&quot;
+<span class="LineNr"> 81 </span>         Order.transaction do
+<span class="LineNr"> 82 </span>           order = Order.new
+<span class="LineNr"> 83 </span><span class="Statement">@@ -265,6 +276,7 @@</span>
+<span class="LineNr"> 84 </span>       end
+<span class="LineNr"> 85 </span>       get '/:id' do
+<span class="LineNr"> 86 </span>         authenticated?
+<span class="LineNr"> 87 </span><span class="Identifier">+        header['Content-Type'] = 'application/json'</span>
+<span class="LineNr"> 88 </span>         #logger.info &quot;Receiving parameters: #{params.as_json}&quot;
+<span class="LineNr"> 89 </span>         reserve = Reserve.where(:id =&gt; params[:id], :organization_id =&gt; params[:org_id])
+<span class="LineNr"> 90 </span>
+<span class="LineNr"> 91 </span><span class="Statement">@@ -289,7 +301,7 @@</span>
+<span class="LineNr"> 92 </span>       end
+<span class="LineNr"> 93 </span>       post '/' do
+<span class="LineNr"> 94 </span>         authenticated?
+<span class="LineNr"> 95 </span><span class="Special">-</span>
+<span class="LineNr"> 96 </span><span class="Identifier">+        header['Content-Type'] = 'application/json'</span>
+<span class="LineNr"> 97 </span>         reserve = Reserve.new
+<span class="LineNr"> 98 </span>
+<span class="LineNr"> 99 </span>         reserve.organization_id = params[:org_id]
+<span class="LineNr">100 </span><span class="Statement">@@ -317,6 +329,7 @@</span>
+<span class="LineNr">101 </span>       end
+<span class="LineNr">102 </span>       get '/' do
+<span class="LineNr">103 </span>         authenticated?
+<span class="LineNr">104 </span><span class="Identifier">+        header['Content-Type'] = 'application/json'</span>
+<span class="LineNr">105 </span>         #logger.info &quot;Receiving parameters: #{params.as_json}&quot;
+<span class="LineNr">106 </span>         news = News.select([:id, :title, :short_description, :published_at,
+<span class="LineNr">107 </span>                     :image_file_name, :image_content_type,
+<span class="LineNr">108 </span><span class="Statement">@@ -338,6 +351,7 @@</span>
+<span class="LineNr">109 </span>       end
+<span class="LineNr">110 </span>       get '/:id' do
+<span class="LineNr">111 </span>         authenticated?
+<span class="LineNr">112 </span><span class="Identifier">+        header['Content-Type'] = 'application/json'</span>
+<span class="LineNr">113 </span>         #logger.info &quot;Receiving parameters: #{params.as_json}&quot;
+<span class="LineNr">114 </span>         news = News.select([:id, :title, :full_description, :published_at,
+<span class="LineNr">115 </span>                     :image_file_name, :image_content_type,
+<span class="LineNr">116 </span><span class="Statement">@@ -359,6 +373,7 @@</span>
+<span class="LineNr">117 </span>       end
+<span class="LineNr">118 </span>       get '/' do
+<span class="LineNr">119 </span>         authenticated?
+<span class="LineNr">120 </span><span class="Identifier">+        header['Content-Type'] = 'application/json'</span>
+<span class="LineNr">121 </span>         #logger.info &quot;Receiving parameters: #{params.as_json}&quot;
+<span class="LineNr">122 </span>         event = Event.select([:id, :title,
+<span class="LineNr">123 </span>                      :image_file_name, :image_content_type,
+<span class="LineNr">124 </span><span class="Statement">@@ -380,11 +395,15 @@</span>
+<span class="LineNr">125 </span>       end
+<span class="LineNr">126 </span>       get '/' do
+<span class="LineNr">127 </span>         authenticated?
+<span class="LineNr">128 </span><span class="Identifier">+</span>
+<span class="LineNr">129 </span><span class="Identifier">+        header['Content-Type'] = 'text/html; charset=UTF-8'</span>
+<span class="LineNr">130 </span><span class="Identifier">+        header['Connection'] = 'close'</span>
+<span class="LineNr">131 </span><span class="Identifier">+</span>
+<span class="LineNr">132 </span>         #logger.info &quot;Receiving parameters: #{params.as_json}&quot;
+<span class="LineNr">133 </span><span class="Special">-        about = About.select([:id, :body]).where(:organization_id =&gt; params[:org_id])</span>
+<span class="LineNr">134 </span><span class="Identifier">+        about = About.where(:organization_id =&gt; params[:org_id])</span>
+<span class="LineNr">135 </span>         if about.any?
+<span class="LineNr">136 </span>           status 200
+<span class="LineNr">137 </span><span class="Special">-          about.to_json</span>
+<span class="LineNr">138 </span><span class="Identifier">+          '&lt;html&gt;&lt;head&gt;&lt;title&gt;About&lt;/title&gt;&lt;/head&gt;&lt;body style=&quot;background:transparent;&quot;&gt;' + about.first[:body].to_s + '&lt;/body&gt;&lt;/html&gt;'</span>
+<span class="LineNr">139 </span>         else
+<span class="LineNr">140 </span>           error!('Nothing to return', 404)
+<span class="LineNr">141 </span>         end
+<span class="LineNr">142 </span><span class="Statement">@@ -401,7 +420,7 @@</span>
+<span class="LineNr">143 </span>
+<span class="LineNr">144 </span>       post '/register_device' do
+<span class="LineNr">145 </span>         authenticated?
+<span class="LineNr">146 </span><span class="Special">-</span>
+<span class="LineNr">147 </span><span class="Identifier">+        header['Content-Type'] = 'application/json'</span>
+<span class="LineNr">148 </span>         device_token = DeviceToken.new
+<span class="LineNr">149 </span>
+<span class="LineNr">150 </span>         device_token.organization_id = params[:org_id]
+</pre>
+</body>
+</html>
